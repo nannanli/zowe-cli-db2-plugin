@@ -23,7 +23,7 @@ node('ca-jenkins-agent') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
 
-    // Build admins, users that can approve the build and receieve emails for 
+    // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
     pipeline.admins.add("zfernand0", "mikebauerca", "markackert", "dkelosky")
 
@@ -31,7 +31,8 @@ node('ca-jenkins-agent') {
     pipeline.protectedBranches.addMap([
         [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "latest"]],
         [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.MINOR, dependencies: ["@brightside/imperative": "lts-incremental"]],
-        [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
+        [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]],
+        [name: "test-ts-update", tag: "latest", dependencies: ["@zowe/imperative": "latest"]]
     ])
 
     // Git configuration information
@@ -80,7 +81,7 @@ node('ca-jenkins-agent') {
     def TEST_ROOT = "__tests__/__results__"
     def UNIT_TEST_ROOT = "$TEST_ROOT/unit"
     def UNIT_JUNIT_OUTPUT = "$UNIT_TEST_ROOT/junit.xml"
-    
+
     // Perform a unit test and capture the results
     pipeline.test(
         name: "Unit",
@@ -132,9 +133,9 @@ node('ca-jenkins-agent') {
 
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
-    pipeline.deploy(
-        versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
-    )
+    //pipeline.deploy(
+    //    versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    //)
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.
